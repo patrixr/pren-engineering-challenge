@@ -7,11 +7,11 @@
     "build": "rm -rf dist/ && tsc && cp -R src/resource dist/",
     "watch": "tsc -w",
     "dev": "dotenvx run -f .env.local -- tsx --watch --inspect src/index.ts",
-    "test": "dotenvx run -f .env.test -- mocha --timeout 20000 --require ts-node/register --require source-map-support/register --recursive 'test/**/*.{ts,tsx}'",
-    "test:coverage": "dotenvx run -f .env.test -- nyc mocha --timeout 20000 --require ts-node/register --require source-map-support/register --recursive 'test/**/*.{ts,tsx}'",
-    "db:sync": "typeorm schema:sync",
+    "test": "dotenvx run -f .env.test -- nyc mocha --timeout 20000 --require ts-node/register --require source-map-support/register --recursive 'test/**/*.{ts,tsx}'",
+    "test:localhost": "TEST_DB_HOST=localhost npm run test",
     "lint": "tslint -p ./tsconfig.json 'src/**/*.{ts,tsx}'",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "start": "node dist/index.js"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",

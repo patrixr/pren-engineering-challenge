@@ -1,6 +1,6 @@
-import { Result } from "../entity/result";
-import { formatDate } from "../utils/formats";
-import { SerializedRecord } from "./base";
+import { Result } from '../entity/result';
+import { formatDate } from '../utils/formats';
+import { SerializedRecord } from './base';
 
 type SerializedResult = SerializedRecord<{
   result: any;
@@ -11,7 +11,7 @@ type SerializedResult = SerializedRecord<{
 }>;
 
 const aliases: Record<string, string> = {
-  type: "resultType",
+  type: 'resultType',
 };
 
 const formatters: Record<string, (value: any) => any> = {
@@ -25,7 +25,7 @@ export function serializeResult(
 ): SerializedResult {
   const record: SerializedResult = {
     id: result.resultId,
-    type: "sample",
+    type: 'sample',
   };
 
   if (include.length) {

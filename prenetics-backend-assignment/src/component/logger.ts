@@ -1,4 +1,4 @@
-import { readEnv } from "../utils/env";
+import { readEnv } from '../utils/env';
 
 export enum LogLevel {
   ERROR = 0,
@@ -20,7 +20,7 @@ class CommonLogger implements Logger {
   private level: LogLevel = LogLevel.INFO;
 
   constructor() {
-    const lvl = readEnv("LOG_LEVEL", "info");
+    const lvl = readEnv('LOG_LEVEL', 'info');
     const level = LogLevel[lvl.toUpperCase() as keyof typeof LogLevel];
     if (level !== undefined) {
       this.setLevel(level);
@@ -29,7 +29,7 @@ class CommonLogger implements Logger {
 
   private formatMessage(level: string, msg: any): string {
     const timestamp = new Date().toISOString();
-    const formattedMsg = typeof msg === "object" ? JSON.stringify(msg) : msg;
+    const formattedMsg = typeof msg === 'object' ? JSON.stringify(msg) : msg;
     return `[${timestamp}] ${level}: ${formattedMsg}`;
   }
 
@@ -43,25 +43,25 @@ class CommonLogger implements Logger {
 
   info(msg: any): void {
     if (this.level >= LogLevel.INFO) {
-      console.log(this.formatMessage("INFO", msg));
+      console.log(this.formatMessage('INFO', msg));
     }
   }
 
   warn(msg: any): void {
     if (this.level >= LogLevel.WARN) {
-      console.warn(this.formatMessage("WARN", msg));
+      console.warn(this.formatMessage('WARN', msg));
     }
   }
 
   error(msg: any): void {
     if (this.level >= LogLevel.ERROR) {
-      console.error(this.formatMessage("ERROR", msg));
+      console.error(this.formatMessage('ERROR', msg));
     }
   }
 
   debug(msg: any): void {
     if (this.level >= LogLevel.DEBUG) {
-      console.log(this.formatMessage("DEBUG", msg));
+      console.log(this.formatMessage('DEBUG', msg));
     }
   }
 }

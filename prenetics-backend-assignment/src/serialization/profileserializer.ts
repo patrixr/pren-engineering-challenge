@@ -1,5 +1,5 @@
-import { Profile } from "../entity/profile";
-import { SerializedRecord } from "./base";
+import { Profile } from '../entity/profile';
+import { SerializedRecord } from './base';
 
 type SerializedProfile = SerializedRecord<{
   profileId: string;
@@ -12,7 +12,7 @@ export function serializeProfile(
 ): SerializedProfile {
   const record: SerializedProfile = {
     id: profile.profileId,
-    type: "profile",
+    type: 'profile',
   };
 
   if (include.length) {

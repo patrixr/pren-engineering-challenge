@@ -1,9 +1,9 @@
-import "express-validator";
-import "reflect-metadata";
-import { initialiseDb } from "./component/db";
-import { createHttpServer } from "./component/server";
-import { logger } from "./component/logger";
-import { APPLICATION_NAME, PORT } from "./component/constant";
+import 'express-validator';
+import 'reflect-metadata';
+import { initialiseDb } from './component/db';
+import { createHttpServer } from './component/server';
+import { logger } from './component/logger';
+import { APPLICATION_NAME, PORT } from './component/constant';
 
 initialiseDb()
   .then(() => {

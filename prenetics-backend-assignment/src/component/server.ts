@@ -1,8 +1,8 @@
-import express from "express";
-import expressValidator from "express-validator";
-import * as http from "http";
-import { routes } from "../route";
-import { logger } from "./logger";
+import express from 'express';
+import expressValidator from 'express-validator';
+import * as http from 'http';
+import { routes } from '../route';
+import { logger } from './logger';
 
 export function createHttpServer(): http.Server {
   const app = express();
@@ -11,17 +11,17 @@ export function createHttpServer(): http.Server {
   app.use(expressValidator());
   // request validation middleware
   app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Origin', '*');
     res.header(
-      "Access-Control-Allow-Headers",
+      'Access-Control-Allow-Headers',
       `Origin,Accept,Content-Type,X-Owner,X-Requested-With,X-XSRF-Token,X-Access-Token,Authorization,Cache-Control,Expires`,
     );
     res.header(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     );
-    res.header("Access-Control-Max-Age", "3600");
-    res.header("Access-Control-Allow-Credentials", "true");
+    res.header('Access-Control-Max-Age', '3600');
+    res.header('Access-Control-Allow-Credentials', 'true');
     next();
   });
   routes.forEach((r) => {
@@ -51,19 +51,19 @@ export function createHttpServer(): http.Server {
       }
     };
     switch (method) {
-      case "put":
+      case 'put':
         app.put(route, handler);
         break;
-      case "post":
+      case 'post':
         app.post(route, handler);
         break;
-      case "delete":
+      case 'delete':
         app.delete(route, handler);
         break;
-      case "patch":
+      case 'patch':
         app.patch(route, handler);
         break;
-      case "get":
+      case 'get':
         app.get(route, handler);
         break;
     }

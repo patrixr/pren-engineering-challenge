@@ -14,7 +14,7 @@ type IntegrationSuiteState = {
 
 function createTestDatabaseString(dbName: string = "postgres") {
   const port = readEnv("TEST_DB_PORT", "5432");
-  const host = readEnv("TEST_DB_HOST", "localhost");
+  const host = readEnv("TEST_DB_HOST", "postgres");
   const uname = readEnv("TEST_DB_USERNAME", "dummy");
   const password = readEnv("TEST_DB_PASSWORD", "dummy");
   return `postgresql://${uname}:${password}@${host}:${port}/${dbName}`;

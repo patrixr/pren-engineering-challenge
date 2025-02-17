@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import { logger } from "../component/logger";
-import { Organisation } from "../entity/organisation";
+import { Request, Response } from 'express';
+import { getRepository } from 'typeorm';
+import { logger } from '../component/logger';
+import { Organisation } from '../entity/organisation';
 
 export const orgController = new (class {
   getOrgs = async (request: Request, response: Response) => {
@@ -10,7 +10,7 @@ export const orgController = new (class {
       response.status(200).json({
         data: orgs.map(({ organisationId: id, name }) => ({
           id,
-          type: "organisation",
+          type: 'organisation',
           attributes: {
             name,
           },
@@ -18,7 +18,7 @@ export const orgController = new (class {
       });
     } catch (err) {
       logger.error(err.message);
-      response.status(500).json({ msg: "Something went wrong" });
+      response.status(500).json({ msg: 'Something went wrong' });
     }
-  };
+  }
 })();

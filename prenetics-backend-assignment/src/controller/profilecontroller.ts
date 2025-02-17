@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
-import { getManager, getRepository } from "typeorm";
-import { logger } from "../component/logger";
-import { Organisation } from "../entity/organisation";
-import { Profile } from "../entity/profile";
+import { Request, Response } from 'express';
+import { getManager, getRepository } from 'typeorm';
+import { logger } from '../component/logger';
+import { Organisation } from '../entity/organisation';
+import { Profile } from '../entity/profile';
 
 export const profileController = new (class {
   getProfile = async (request: Request, response: Response) => {
-    request.checkParams("org", "org is not valid").isUUID();
-    request.checkParams("profileId", "profileId is not valid").isUUID();
+    request.checkParams('org', 'org is not valid').isUUID();
+    request.checkParams('profileId', 'profileId is not valid').isUUID();
     const errors = request.validationErrors();
     if (errors) {
       response.status(400).json(errors);
@@ -18,17 +18,17 @@ export const profileController = new (class {
     try {
       const profile = await getManager()
         .createQueryBuilder()
-        .select("profile")
-        .from(Profile, "profile")
+        .select('profile')
+        .from(Profile, 'profile')
         .innerJoin(
-          "profile.organisation",
-          "organisation",
-          "organisation.organisationId = :organisationId",
+          'profile.organisation',
+          'organisation',
+          'organisation.organisationId = :organisationId',
           {
             organisationId: org,
           },
         )
-        .where("profile.profileId = :profileId", {
+        .where('profile.profileId = :profileId', {
           profileId,
         })
         .getOne();
@@ -37,25 +37,25 @@ export const profileController = new (class {
         response.status(200).json({
           data: {
             id,
-            type: "profile",
+            type: 'profile',
             attributes: {
               name,
             },
           },
         });
       } else {
-        response.status(404).json({ msg: "Result not found" });
+        response.status(404).json({ msg: 'Result not found' });
       }
     } catch (err) {
       logger.error(err.message);
-      response.status(500).json({ msg: "Something went wrong" });
+      response.status(500).json({ msg: 'Something went wrong' });
     }
-  };
+  }
 
   createProfile = async (request: Request, response: Response) => {
-    request.checkParams("org", "org is not valid").isUUID();
-    request.checkBody("data.type", "type is not valid").equals("profile");
-    request.checkBody("data.attributes.name", "name is not valid").notEmpty();
+    request.checkParams('org', 'org is not valid').isUUID();
+    request.checkBody('data.type', 'type is not valid').equals('profile');
+    request.checkBody('data.attributes.name', 'name is not valid').notEmpty();
     const errors = request.validationErrors();
     if (errors) {
       response.status(400).json(errors);
@@ -66,14 +66,14 @@ export const profileController = new (class {
       const { org } = request.params;
       const organisation = await getManager()
         .createQueryBuilder()
-        .select("organisation")
-        .from(Organisation, "organisation")
-        .where("organisation.organisationId = :organisationId", {
+        .select('organisation')
+        .from(Organisation, 'organisation')
+        .where('organisation.organisationId = :organisationId', {
           organisationId: org,
         })
         .getOne();
       if (!organisation) {
-        response.status(404).json({ msg: "Org not found" });
+        response.status(404).json({ msg: 'Org not found' });
         return;
       }
       const { name } = request.body.data.attributes;
@@ -88,7 +88,7 @@ export const profileController = new (class {
       response.status(201).json({
         data: {
           id,
-          type: "profile",
+          type: 'profile',
           attributes: {
             name,
           },
@@ -96,7 +96,7 @@ export const profileController = new (class {
       });
     } catch (err) {
       logger.error(err.message);
-      response.status(500).json({ msg: "Something went wrong" });
+      response.status(500).json({ msg: 'Something went wrong' });
     }
-  };
+  }
 })();

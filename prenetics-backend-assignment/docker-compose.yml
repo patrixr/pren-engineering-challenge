@@ -1,12 +1,14 @@
 version: "3.9"
 services:
-  # swagger:
-  #   image: swaggerapi/swagger-ui
-  #   ports:
-  #     - "9080:8080"
-  #   environment:
-  #     BASE_URL: /swagger
-  #     API_URL: http://localhost:8080/test/v1.0/swagger
+  swagger:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "9080:8080"
+    environment:
+      BASE_URL: /swagger
+      API_URL: http://localhost:8080/test/v1.0/swagger
+    networks:
+      - app-network
   postgres:
     image: postgres:10-alpine
     ports:
@@ -17,9 +19,39 @@ services:
       POSTGRES_DB: services
       TZ: UTC
       PGTZ: UTC
-  # test:
-  #   build: .
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dummy -d services"]
+      interval: 2s
+    networks:
+      - app-network
+  tests:
+    build:
+      context: .
+      target: build
+    command: sh -c "npm test && touch /tmp/tests-passed || exit 1"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    volumes:
+      - app-volume:/tmp
+  app:
+    build:
+      context: .
+      target: deployment
+    command: sh -c "until [ -f /tmp/tests-passed ]; do sleep 1; done && npm start"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - tests
+    networks:
+      - app-network
+    volumes:
+      - app-volume:/tmp
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  app-volume:

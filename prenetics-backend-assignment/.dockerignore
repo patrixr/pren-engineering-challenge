@@ -1,4 +1,5 @@
 *
 !src
 !test
+!.env.test
 !*.json

@@ -1,4 +1,4 @@
-export function readEnv(key: string, fallback = ""): string {
+export function readEnv(key: string, fallback = ''): string {
   const value = process.env[key];
   return value ? value : fallback;
 }
@@ -14,7 +14,7 @@ export function readEnvStrict(key: string): string {
 }
 
 export function env() {
-  return readEnv("NODE_ENV", "dev");
+  return readEnv('NODE_ENV', 'dev');
 }
 
 export function isTestEnv() {
