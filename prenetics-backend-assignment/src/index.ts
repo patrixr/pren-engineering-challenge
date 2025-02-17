@@ -5,7 +5,6 @@ import { createHttpServer } from "./component/server";
 import { logger } from "./component/logger";
 import { APPLICATION_NAME, PORT } from "./component/constant";
 
-console.log("initialiseDb");
 initialiseDb()
   .then(() => {
     const server = createHttpServer();

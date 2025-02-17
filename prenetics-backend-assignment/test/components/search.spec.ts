@@ -49,15 +49,48 @@ describeIntegration("Search component", () => {
 
     const results = await search(manager, organisation);
     expect(results.data[0]).to.have.property("attributes");
-    expect(results.data[0].attributes.result).to.have.eq(result.result);
-    expect(results.data[0].attributes.sampleId).to.have.eq(result.sampleId);
-    expect(results.data[0].attributes.resultType).to.have.eq(result.type);
-    expect(results.data[0].attributes.activateTime).to.have.eq(
+    expect(results.data[0].attributes!.result).to.have.eq(result.result);
+    expect(results.data[0].attributes!.sampleId).to.have.eq(result.sampleId);
+    expect(results.data[0].attributes!.activateTime).to.have.eq(
       formatDate(result.activateTime),
     );
-    expect(results.data[0].attributes.resultTime).to.have.eq(
+    expect(results.data[0].attributes!.resultTime).to.have.eq(
       formatDate(result.resultTime),
     );
+  });
+
+  describe("additional extra fields", () => {
+    // attribute fields
+    ["resultType"].forEach((field) => {
+      it(`allows including the ${field} field in the attributes`, async () => {
+        const profile = await createFakeProfile({ organisation });
+        await createFakeResult({ profile });
+
+        const results = await search(manager, organisation, {
+          includeFields: [field],
+        });
+        expect(results.data[0].attributes).to.have.property(field);
+      });
+    });
+
+    // profile fields
+    ["profileId"].forEach((field) => {
+      it(`allows including the ${field} field in the profile`, async () => {
+        const profile = await createFakeProfile({ organisation });
+        await createFakeResult({ profile });
+
+        const results = await search(manager, organisation, {
+          includeFields: [field],
+        });
+
+        const includedProfile = results.included.find(
+          (rec) => rec.type === "profile" && rec.id === profile.profileId,
+        );
+
+        expect(includedProfile).to.exist;
+        expect(includedProfile?.attributes).to.have.property(field);
+      });
+    });
   });
 
   describe("filtering", () => {

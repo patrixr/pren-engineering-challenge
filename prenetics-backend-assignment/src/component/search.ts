@@ -1,7 +1,8 @@
 import { EntityManager } from "typeorm";
 import { Organisation } from "../entity/organisation";
 import { Result } from "../entity/result";
-import { formatDate } from "../utils/formats";
+import { serializeProfile } from "../serialization/profileserializer";
+import { serializeResult } from "../serialization/resultserializer";
 
 export type SearchOpts = {
   pageOffset?: number;
@@ -11,9 +12,15 @@ export type SearchOpts = {
   activateTime?: string;
   resultTime?: string;
   resultValue?: string;
+  includeFields?: string[];
 };
 
 const DEFAULT_PAGE_SIZE = 15;
+
+const INCLUDABLE_FIELDS: Record<string, { type: string; key: string }> = {
+  profileId: { type: "profile", key: "profileId" },
+  resultType: { type: "result", key: "type" },
+};
 
 export async function search(
   manager: EntityManager,
@@ -61,6 +68,21 @@ export async function search(
     });
   }
 
+  const fieldsToInclude: Record<string, string[]> = {
+    profile: ["name"],
+    result: ["result", "sampleId", "activateTime", "resultTime"],
+  };
+
+  (opts.includeFields ?? []).forEach((field) => {
+    if (INCLUDABLE_FIELDS[field]) {
+      const { key, type } = INCLUDABLE_FIELDS[field];
+      if (fieldsToInclude[type]) {
+        fieldsToInclude[type].push(key);
+      }
+      query = query.addSelect(`${type}.${key}`);
+    }
+  });
+
   const [results, total] = await query
     .orderBy("result.activateTime", "ASC")
     .skip(page * pageSize)
@@ -75,37 +97,18 @@ export async function search(
       pageCount: Math.ceil(total / pageSize),
     },
     data: results.map((result) => ({
-      id: result.resultId,
-      type: "sample",
-      attributes: {
-        result: result.result,
-        sampleId: result.sampleId,
-        resultType: result.type,
-        activateTime: formatDate(result.activateTime),
-        resultTime: formatDate(result.resultTime),
-      },
+      ...serializeResult(result, fieldsToInclude.result),
       relationships: {
         profile: {
-          data: {
-            type: "profile",
-            id: result.profile.profileId,
-          },
+          data: serializeProfile(result.profile),
         },
       },
     })),
     included: Array.from(
       new Set(results.map((result) => result.profile.profileId)),
     ).map((profileId) => {
-      const profile = results.find(
-        (r) => r.profile.profileId === profileId,
-      )!.profile;
-      return {
-        type: "profile",
-        id: profile.profileId,
-        attributes: {
-          name: profile.name,
-        },
-      };
+      const rec = results.find((r) => r.profile.profileId === profileId)!;
+      return serializeProfile(rec.profile, fieldsToInclude.profile);
     }),
   };
 

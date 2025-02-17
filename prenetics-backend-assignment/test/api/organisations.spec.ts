@@ -147,7 +147,6 @@ describeIntegration("Search API", ({ getServer }) => {
             attributes: {
               result: "negative",
               sampleId: "1234567890",
-              resultType: ResultType.antibody,
               activateTime: "2021-07-01 15:00:00",
               resultTime: "2021-07-01 16:00:00",
             },
@@ -166,7 +165,6 @@ describeIntegration("Search API", ({ getServer }) => {
             attributes: {
               result: "negative",
               sampleId: "0987654321",
-              resultType: ResultType.antigen,
               activateTime: "2021-07-02 15:00:00",
               resultTime: "2021-07-02 16:00:00",
             },
@@ -185,7 +183,6 @@ describeIntegration("Search API", ({ getServer }) => {
             attributes: {
               result: "negative",
               sampleId: "109876543211",
-              resultType: ResultType.rtpcr,
               activateTime: "2021-07-03 15:00:00",
               resultTime: "2021-07-03 16:00:00",
             },
@@ -204,7 +201,6 @@ describeIntegration("Search API", ({ getServer }) => {
             attributes: {
               result: "negative",
               sampleId: "121212121212",
-              resultType: ResultType.antibody,
               activateTime: "2021-07-04 15:00:00",
               resultTime: "2021-07-04 16:00:00",
             },
@@ -223,7 +219,6 @@ describeIntegration("Search API", ({ getServer }) => {
             attributes: {
               result: "negative",
               sampleId: "181818188181",
-              resultType: ResultType.rtpcr,
               activateTime: "2021-07-05 15:00:00",
               resultTime: "2021-07-05 16:00:00",
             },
@@ -556,6 +551,30 @@ describeIntegration("Search API", ({ getServer }) => {
             "30000000-0000-0000-0000-000000000000",
           );
         }
+      });
+    });
+
+    describe("additional fields", () => {
+      it("allows including the result type and profileId", async () => {
+        const profile = await createFakeProfile({
+          organisation,
+          profileId: "60000000-0000-0000-0000-000000000000",
+        });
+        await createFakeResult({ profile, type: ResultType.antibody });
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .query({
+            include: "resultType,profileId",
+          })
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(1);
+        expect(body.data[0].attributes.resultType).to.eq(ResultType.antibody);
+        expect(body.included[0].attributes["profileId"]).to.eq(
+          "60000000-0000-0000-0000-000000000000",
+        );
       });
     });
 

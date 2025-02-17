@@ -9,6 +9,12 @@ export function validateSampleSearchRequest(req: Request) {
   req.sanitize("patientName").trim();
 
   req
+    .checkQuery("include")
+    .optional()
+    .isString()
+    .withMessage("Include field must be an array of extra fields to include");
+
+  req
     .checkParams("org")
     .exists()
     .isUUID()
@@ -89,6 +95,10 @@ export function buildSearchOpts(request: Request): SearchOpts {
 
   if (request.query.resultValue) {
     searchOpts.resultValue = request.query.resultValue as string;
+  }
+
+  if (request.query.include) {
+    searchOpts.includeFields = (request.query.include as string).split(",");
   }
 
   return searchOpts;
