@@ -112,6 +112,21 @@ describeIntegration("Search component", () => {
       expect(results.data[0].id).to.eq(expectedResult.resultId);
     });
 
+    it("filters by patient ID", async () => {
+      const otherProfile = await createFakeProfile({ organisation });
+      const profile = await createFakeProfile({ organisation });
+      await createFakeResult({ profile: otherProfile });
+      await createFakeResult({ profile: otherProfile });
+      await createFakeResult({ profile: otherProfile });
+      const expectedResult = await createFakeResult({ profile });
+
+      const results = await search(manager, organisation, {
+        patientId: profile.profileId,
+      });
+      expect(results.data).to.have.lengthOf(1);
+      expect(results.data[0].id).to.eq(expectedResult.resultId);
+    });
+
     it("filters by sample ID", async () => {
       const profile = await createFakeProfile({ organisation });
       await createFakeResult({ profile });

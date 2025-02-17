@@ -9,6 +9,7 @@ export type SearchOpts = {
   pageLimit?: number;
   sampleId?: string;
   patientName?: string;
+  patientId?: string;
   activateTime?: string;
   resultTime?: string;
   resultValue?: string;
@@ -42,6 +43,12 @@ export async function search(
 
   if (opts.patientName) {
     query = query.andWhere("profile.name = :name", { name: opts.patientName });
+  }
+
+  if (opts.patientId) {
+    query = query.andWhere("profile.profileId = :profileId", {
+      profileId: opts.patientId,
+    });
   }
 
   if (opts.sampleId) {

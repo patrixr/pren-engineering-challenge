@@ -46,6 +46,12 @@ export function validateSampleSearchRequest(req: Request) {
     .withMessage("Patient name cannot be empty");
 
   req
+    .checkQuery("patientId")
+    .optional()
+    .isUUID()
+    .withMessage("Patient ID must be a valid UUID");
+
+  req
     .checkQuery("activateTime")
     .optional()
     .isISO8601()
@@ -70,35 +76,39 @@ export function buildSearchOpts(request: Request): SearchOpts {
   const searchOpts: SearchOpts = {};
 
   if (request.query.page && request.query.page.offset) {
-    searchOpts.pageOffset = parseInt(request.query.page.offset as string);
+    searchOpts.pageOffset = parseInt(request.query.page.offset);
   }
 
   if (request.query.page && request.query.page.limit) {
-    searchOpts.pageLimit = parseInt(request.query.page.limit as string);
+    searchOpts.pageLimit = parseInt(request.query.page.limit);
   }
 
   if (request.query.sampleId) {
-    searchOpts.sampleId = request.query.sampleId as string;
+    searchOpts.sampleId = request.query.sampleId;
   }
 
   if (request.query.patientName) {
-    searchOpts.patientName = request.query.patientName as string;
+    searchOpts.patientName = request.query.patientName;
+  }
+
+  if (request.query.patientId) {
+    searchOpts.patientId = request.query.patientId;
   }
 
   if (request.query.activateTime) {
-    searchOpts.activateTime = request.query.activateTime as string;
+    searchOpts.activateTime = request.query.activateTime;
   }
 
   if (request.query.resultTime) {
-    searchOpts.resultTime = request.query.resultTime as string;
+    searchOpts.resultTime = request.query.resultTime;
   }
 
   if (request.query.resultValue) {
-    searchOpts.resultValue = request.query.resultValue as string;
+    searchOpts.resultValue = request.query.resultValue;
   }
 
   if (request.query.include) {
-    searchOpts.includeFields = (request.query.include as string).split(",");
+    searchOpts.includeFields = request.query.include.split(",");
   }
 
   return searchOpts;

@@ -450,6 +450,33 @@ describeIntegration("Search API", ({ getServer }) => {
     });
 
     describe("filtering", () => {
+      it("filters by patient ID", async () => {
+        for (let i = 0; i < 5; i++) {
+          const profile = await createFakeProfile({
+            organisation,
+            profileId: `${i}0000000-0000-0000-0000-000000000000`,
+          });
+          await createFakeResult({ profile });
+          await createFakeResult({ profile });
+          await createFakeResult({ profile });
+        }
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .query({
+            patientId: "30000000-0000-0000-0000-000000000000",
+          })
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(3);
+        for (const sample of body.data) {
+          expect(sample.relationships.profile.data.id).to.eq(
+            "30000000-0000-0000-0000-000000000000",
+          );
+        }
+      });
+
       it("filters by patient name", async () => {
         for (let i = 0; i < 5; i++) {
           const profile = await createFakeProfile({
