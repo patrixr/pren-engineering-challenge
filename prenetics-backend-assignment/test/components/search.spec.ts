@@ -60,6 +60,26 @@ describeIntegration("Search component", () => {
     );
   });
 
+  describe("filtering", () => {
+    it("filters by patient name", async () => {
+      const otherProfile = await createFakeProfile({ organisation });
+      const profile = await createFakeProfile({
+        organisation,
+        name: "John Doe",
+      });
+      await createFakeResult({ profile: otherProfile });
+      await createFakeResult({ profile: otherProfile });
+      await createFakeResult({ profile: otherProfile });
+      const expectedResult = await createFakeResult({ profile });
+
+      const results = await search(manager, organisation, {
+        patientName: "John Doe",
+      });
+      expect(results.data).to.have.lengthOf(1);
+      expect(results.data[0].id).to.eq(expectedResult.resultId);
+    });
+  });
+
   describe("pagination", () => {
     it("returns a maximum of 15 results by default", async () => {
       for (let i = 0; i < 20; ++i) {

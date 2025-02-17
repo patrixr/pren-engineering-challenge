@@ -25,13 +25,19 @@ export async function search(
   const page = opts.pageOffset ?? 0;
   const pageSize = opts.pageLimit ?? DEFAULT_PAGE_SIZE;
 
-  const [results, total] = await repo
+  let query = repo
     .createQueryBuilder("result")
     .leftJoinAndSelect("result.profile", "profile")
     .leftJoin("profile.organisation", "organisation")
     .where("organisation.organisationId = :orgId", {
       orgId: organisation.organisationId,
-    })
+    });
+
+  if (opts.patientName) {
+    query = query.andWhere("profile.name = :name", { name: opts.patientName });
+  }
+
+  const [results, total] = await query
     .orderBy("result.activateTime", "ASC")
     .skip(page * pageSize)
     .take(pageSize)
