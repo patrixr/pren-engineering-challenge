@@ -63,15 +63,12 @@ export function validateSampleSearchRequest(req: Request) {
 export function buildSearchOpts(request: Request): SearchOpts {
   const searchOpts: SearchOpts = {};
 
-  if (request.query["page[offset]"]) {
-    searchOpts.pageOffset = parseInt(
-      request.query["page[offset]"] as string,
-      10,
-    );
+  if (request.query.page && request.query.page.offset) {
+    searchOpts.pageOffset = parseInt(request.query.page.offset as string);
   }
 
-  if (request.query["page[limit]"]) {
-    searchOpts.pageLimit = parseInt(request.query["page[limit]"] as string, 10);
+  if (request.query.page && request.query.page.limit) {
+    searchOpts.pageLimit = parseInt(request.query.page.limit as string);
   }
 
   if (request.query.sampleId) {

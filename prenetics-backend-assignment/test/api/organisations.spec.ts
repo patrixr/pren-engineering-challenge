@@ -453,5 +453,63 @@ describeIntegration("Search API", ({ getServer }) => {
           .expect("Content-Type", /json/);
       });
     });
+
+    describe("pagination", () => {
+      it("returns a page of 15 by default", async () => {
+        for (let i = 0; i < 20; i++) {
+          const profile = await createFakeProfile({ organisation });
+          await createFakeResult({ profile });
+        }
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(15);
+      });
+
+      it("returns the number of results specified by page size", async () => {
+        for (let i = 0; i < 20; i++) {
+          const profile = await createFakeProfile({ organisation });
+          await createFakeResult({ profile });
+        }
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .query({
+            "page[limit]": 10,
+          })
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(10);
+      });
+
+      it("returns the right page", async () => {
+        for (let i = 0; i < 10; ++i) {
+          const profile = await createFakeProfile({ organisation });
+          await createFakeResult({
+            profile,
+            activateTime: new Date(`2021-01-0${i + 1}`),
+            resultId: `${i}0000000-0000-0000-0000-000000000000`,
+          });
+        }
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .query({
+            "page[limit]": 3,
+            "page[offset]": 2,
+          })
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(3);
+        expect(body.data[0].id).to.eq("60000000-0000-0000-0000-000000000000");
+        expect(body.data[1].id).to.eq("70000000-0000-0000-0000-000000000000");
+        expect(body.data[2].id).to.eq("80000000-0000-0000-0000-000000000000");
+      });
+    });
   });
 });

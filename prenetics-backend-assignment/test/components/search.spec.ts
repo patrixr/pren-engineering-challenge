@@ -31,16 +31,6 @@ describeIntegration("Search component", () => {
     expect(results.data).to.be.empty;
   });
 
-  it("returns all the results available", async () => {
-    for (let i = 0; i < 20; ++i) {
-      const profile = await createFakeProfile({ organisation });
-      await createFakeResult({ profile });
-    }
-
-    const results = await search(manager, organisation);
-    expect(results.data).to.have.lengthOf(20);
-  });
-
   it("sets the type and id at the root of each result", async () => {
     const profile = await createFakeProfile({ organisation });
     const result = await createFakeResult({ profile });
@@ -68,5 +58,80 @@ describeIntegration("Search component", () => {
     expect(results.data[0].attributes.resultTime).to.have.eq(
       formatDate(result.resultTime),
     );
+  });
+
+  describe("pagination", () => {
+    it("returns a maximum of 15 results by default", async () => {
+      for (let i = 0; i < 20; ++i) {
+        const profile = await createFakeProfile({ organisation });
+        await createFakeResult({ profile });
+      }
+
+      const results = await search(manager, organisation);
+      expect(results.data).to.have.lengthOf(15);
+    });
+
+    it("returns the number of results specified by page size", async () => {
+      for (let i = 0; i < 10; ++i) {
+        const profile = await createFakeProfile({ organisation });
+        await createFakeResult({
+          profile,
+          activateTime: new Date(`2021-01-0${i + 1}`),
+          resultId: `${i}0000000-0000-0000-0000-000000000000`,
+        });
+      }
+
+      const results = await search(manager, organisation, { pageLimit: 5 });
+      expect(results.data).to.have.lengthOf(5);
+      expect(results.data[0].id).to.eq("00000000-0000-0000-0000-000000000000");
+      expect(results.data[1].id).to.eq("10000000-0000-0000-0000-000000000000");
+      expect(results.data[2].id).to.eq("20000000-0000-0000-0000-000000000000");
+      expect(results.data[3].id).to.eq("30000000-0000-0000-0000-000000000000");
+      expect(results.data[4].id).to.eq("40000000-0000-0000-0000-000000000000");
+    });
+
+    it("returns the page specified", async () => {
+      for (let i = 0; i < 10; ++i) {
+        const profile = await createFakeProfile({ organisation });
+        await createFakeResult({
+          profile,
+          activateTime: new Date(`2021-01-0${i + 1}`),
+          resultId: `${i}0000000-0000-0000-0000-000000000000`,
+        });
+      }
+
+      const results = await search(manager, organisation, {
+        pageLimit: 3,
+        pageOffset: 1,
+      });
+      expect(results.data).to.have.lengthOf(3);
+      expect(results.data[0].id).to.eq("30000000-0000-0000-0000-000000000000");
+      expect(results.data[1].id).to.eq("40000000-0000-0000-0000-000000000000");
+      expect(results.data[2].id).to.eq("50000000-0000-0000-0000-000000000000");
+    });
+
+    it("includes pagination information in the meta", async () => {
+      for (let i = 0; i < 10; ++i) {
+        const profile = await createFakeProfile({ organisation });
+        await createFakeResult({
+          profile,
+          activateTime: new Date(`2021-01-0${i + 1}`),
+          resultId: `${i}0000000-0000-0000-0000-000000000000`,
+        });
+      }
+
+      const results = await search(manager, organisation, {
+        pageLimit: 3,
+        pageOffset: 1,
+      });
+      expect(results.meta).to.have.property("total");
+      expect(results.meta).to.have.property("page");
+      expect(results.meta).to.have.property("pageSize");
+      expect(results.meta).to.have.property("pageCount");
+      expect(results.meta.total).to.eq(10);
+      expect(results.meta.page).to.eq(1);
+      expect(results.meta.pageSize).to.eq(3);
+      expect(results.meta.pageCount).to.eq(4);
+    });
   });
 });
