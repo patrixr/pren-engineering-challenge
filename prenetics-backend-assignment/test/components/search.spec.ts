@@ -78,6 +78,107 @@ describeIntegration("Search component", () => {
       expect(results.data).to.have.lengthOf(1);
       expect(results.data[0].id).to.eq(expectedResult.resultId);
     });
+
+    it("filters by sample ID", async () => {
+      const profile = await createFakeProfile({ organisation });
+      await createFakeResult({ profile });
+      await createFakeResult({ profile });
+      await createFakeResult({ profile });
+      const expectedResult = await createFakeResult({ profile });
+
+      const results = await search(manager, organisation, {
+        sampleId: expectedResult.sampleId,
+      });
+      expect(results.data).to.have.lengthOf(1);
+      expect(results.data[0].id).to.eq(expectedResult.resultId);
+    });
+
+    it("filters by activate time", async () => {
+      const profile = await createFakeProfile({ organisation });
+      await createFakeResult({ profile, activateTime: new Date("2021-01-01") });
+      await createFakeResult({ profile, activateTime: new Date("2021-01-02") });
+      await createFakeResult({ profile, activateTime: new Date("2021-01-03") });
+      const expectedResult = await createFakeResult({
+        profile,
+        activateTime: new Date("2021-01-04"),
+      });
+
+      const results = await search(manager, organisation, {
+        activateTime: "2021-01-04",
+      });
+      expect(results.data).to.have.lengthOf(1);
+      expect(results.data[0].id).to.eq(expectedResult.resultId);
+    });
+
+    it("filters by result value", async () => {
+      const profile = await createFakeProfile({ organisation });
+      await createFakeResult({ profile, result: "positive" });
+      await createFakeResult({ profile, result: "positive" });
+      const expectedResult = await createFakeResult({
+        profile,
+        result: "negative",
+        activateTime: new Date("2021-01-01"),
+      });
+      const expectedResult2 = await createFakeResult({
+        profile,
+        result: "negative",
+        activateTime: new Date("2021-01-02"),
+      });
+
+      const results = await search(manager, organisation, {
+        resultValue: "negative",
+      });
+      expect(results.data).to.have.lengthOf(2);
+      expect(results.data[0].id).to.eq(expectedResult.resultId);
+      expect(results.data[1].id).to.eq(expectedResult2.resultId);
+    });
+
+    it("filters by result time", async () => {
+      const profile = await createFakeProfile({ organisation });
+      await createFakeResult({ profile, resultTime: new Date("2021-01-01") });
+      await createFakeResult({ profile, resultTime: new Date("2021-01-02") });
+      await createFakeResult({ profile, resultTime: new Date("2021-01-03") });
+      const expectedResult = await createFakeResult({
+        profile,
+        resultTime: new Date("2021-01-04"),
+      });
+
+      const results = await search(manager, organisation, {
+        resultTime: "2021-01-04",
+      });
+      expect(results.data).to.have.lengthOf(1);
+      expect(results.data[0].id).to.eq(expectedResult.resultId);
+    });
+
+    it("filters by multiple fields (time + patient name)", async () => {
+      const profile = await createFakeProfile({
+        organisation,
+        name: "John Doe",
+      });
+      await createFakeResult({ profile, activateTime: new Date("2021-01-01") });
+      await createFakeResult({ profile, activateTime: new Date("2021-01-02") });
+      await createFakeResult({ profile, activateTime: new Date("2021-01-03") });
+      await createFakeResult({
+        activateTime: new Date("2021-01-04"), // same date, different profile
+      });
+      const expectedResult = await createFakeResult({
+        profile,
+        activateTime: new Date("2021-01-04"),
+      });
+      const expectedResult2 = await createFakeResult({
+        profile,
+        activateTime: new Date("2021-01-04"),
+      });
+
+      const results = await search(manager, organisation, {
+        activateTime: "2021-01-04",
+        patientName: "John Doe",
+      });
+
+      expect(results.data).to.have.lengthOf(2);
+      expect(results.data[0].id).to.eq(expectedResult.resultId);
+      expect(results.data[1].id).to.eq(expectedResult2.resultId);
+    });
   });
 
   describe("pagination", () => {

@@ -482,6 +482,81 @@ describeIntegration("Search API", ({ getServer }) => {
           );
         }
       });
+
+      ["resultTime", "activateTime"].forEach((field) => {
+        it(`filters by ${field}`, async () => {
+          for (let i = 0; i < 5; i++) {
+            const profile = await createFakeProfile({ organisation });
+            await createFakeResult({
+              profile,
+              [field]: new Date(`2021-01-0${i + 1}`),
+            });
+            await createFakeResult({ profile });
+            await createFakeResult({ profile });
+          }
+
+          const { body } = await request(getServer())
+            .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+            .query({
+              [field]: "2021-01-03T00:00:00Z",
+            })
+            .expect(200)
+            .expect("Content-Type", /json/);
+
+          expect(body.data).to.have.lengthOf(1);
+          for (const sample of body.data) {
+            expect(sample.attributes[field]).to.eq("2021-01-03 00:00:00");
+          }
+        });
+      });
+
+      it("filters by result value", async () => {
+        for (let i = 0; i < 5; i++) {
+          const profile = await createFakeProfile({ organisation });
+          await createFakeResult({ profile, result: "positive" });
+          await createFakeResult({ profile, result: "negative" });
+        }
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .query({
+            resultValue: "positive",
+          })
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(5);
+        for (const sample of body.data) {
+          expect(sample.attributes.result).to.eq("positive");
+        }
+      });
+
+      it("filters by sample ID", async () => {
+        for (let i = 0; i < 5; i++) {
+          const profile = await createFakeProfile({ organisation });
+          await createFakeResult({
+            profile,
+            sampleId: `${i}0000000-0000-0000-0000-000000000000`,
+          });
+          await createFakeResult({ profile });
+          await createFakeResult({ profile });
+        }
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .query({
+            sampleId: "30000000-0000-0000-0000-000000000000",
+          })
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(1);
+        for (const sample of body.data) {
+          expect(sample.attributes.sampleId).to.eq(
+            "30000000-0000-0000-0000-000000000000",
+          );
+        }
+      });
     });
 
     describe("pagination", () => {

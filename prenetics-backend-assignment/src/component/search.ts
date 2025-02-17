@@ -37,6 +37,30 @@ export async function search(
     query = query.andWhere("profile.name = :name", { name: opts.patientName });
   }
 
+  if (opts.sampleId) {
+    query = query.andWhere("result.sampleId = :sampleId", {
+      sampleId: opts.sampleId,
+    });
+  }
+
+  if (opts.activateTime) {
+    query = query.andWhere("result.activateTime = :activateTime", {
+      activateTime: new Date(opts.activateTime),
+    });
+  }
+
+  if (opts.resultTime) {
+    query = query.andWhere("result.resultTime = :resultTime", {
+      resultTime: new Date(opts.resultTime),
+    });
+  }
+
+  if (opts.resultValue) {
+    query = query.andWhere("result.result = :result", {
+      result: JSON.stringify(opts.resultValue),
+    });
+  }
+
   const [results, total] = await query
     .orderBy("result.activateTime", "ASC")
     .skip(page * pageSize)
