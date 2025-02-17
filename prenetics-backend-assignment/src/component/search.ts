@@ -1,19 +1,25 @@
-import { Request } from "express";
-import { EntityManager, getRepository } from "typeorm";
+import { EntityManager } from "typeorm";
 import { Organisation } from "../entity/organisation";
 import { ResultType } from "./type";
 import { Result } from "../entity/result";
+import { formatDate } from "../utils/formats";
 
-const formatDate = (date: Date): string => {
-  return date.toISOString().replace("T", " ").substring(0, 19);
+export type SearchOpts = {
+  pageOffset?: number;
+  pageLimit?: number;
+  sampleId?: string;
+  patientName?: string;
+  activateTime?: string;
+  resultTime?: string;
+  resultValue?: string;
 };
 
 export async function search(
   manager: EntityManager,
   organisation: Organisation,
-  params: Request["params"],
+  opts: SearchOpts = {},
 ) {
-  const repo = getRepository(Result);
+  const repo = manager.getRepository(Result);
 
   const [results, total] = await repo
     .createQueryBuilder("result")

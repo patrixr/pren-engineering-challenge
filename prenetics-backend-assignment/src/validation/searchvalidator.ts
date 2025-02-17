@@ -1,14 +1,13 @@
 import { Request } from "express";
 import { ResultType } from "../component/type";
+import { SearchOpts } from "../component/search";
 
-export const validateSampleSearchRequest = (req: Request) => {
-  // Sanitization
+export function validateSampleSearchRequest(req: Request) {
   req.sanitize("page[offset]").toInt();
   req.sanitize("page[limit]").toInt();
   req.sanitize("sampleId").trim();
   req.sanitize("patientName").trim();
 
-  // Validation
   req
     .checkParams("org")
     .exists()
@@ -59,4 +58,41 @@ export const validateSampleSearchRequest = (req: Request) => {
     .withMessage(
       `Result type must be one of: ${Object.values(ResultType).join(", ")}`,
     );
-};
+}
+
+export function buildSearchOpts(request: Request): SearchOpts {
+  const searchOpts: SearchOpts = {};
+
+  if (request.query["page[offset]"]) {
+    searchOpts.pageOffset = parseInt(
+      request.query["page[offset]"] as string,
+      10,
+    );
+  }
+
+  if (request.query["page[limit]"]) {
+    searchOpts.pageLimit = parseInt(request.query["page[limit]"] as string, 10);
+  }
+
+  if (request.query.sampleId) {
+    searchOpts.sampleId = request.query.sampleId as string;
+  }
+
+  if (request.query.patientName) {
+    searchOpts.patientName = request.query.patientName as string;
+  }
+
+  if (request.query.activateTime) {
+    searchOpts.activateTime = request.query.activateTime as string;
+  }
+
+  if (request.query.resultTime) {
+    searchOpts.resultTime = request.query.resultTime as string;
+  }
+
+  if (request.query.resultValue) {
+    searchOpts.resultValue = request.query.resultValue as string;
+  }
+
+  return searchOpts;
+}

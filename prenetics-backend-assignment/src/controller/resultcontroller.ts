@@ -5,7 +5,10 @@ import { search } from "../component/search";
 import { Organisation } from "../entity/organisation";
 import { Profile } from "../entity/profile";
 import { Result } from "../entity/result";
-import { validateSampleSearchRequest } from "../validation/searchvalidator";
+import {
+  buildSearchOpts,
+  validateSampleSearchRequest,
+} from "../validation/searchvalidator";
 
 export const resultController = new (class {
   getResults = async (request: Request, response: Response) => {
@@ -17,6 +20,9 @@ export const resultController = new (class {
       return;
     }
     const { org } = request.params;
+
+    const searchOpts = buildSearchOpts(request);
+
     try {
       const manager = getManager();
       const organisation = await manager.findOne(Organisation, {
@@ -27,7 +33,7 @@ export const resultController = new (class {
       if (!organisation) {
         response.status(404).json({ msg: "Organisation not found" });
       } else {
-        const result = await search(manager, organisation, request.params);
+        const result = await search(manager, organisation, searchOpts);
         response.status(200).json(result);
       }
     } catch (err) {
