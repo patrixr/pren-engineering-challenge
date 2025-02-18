@@ -1,17 +1,19 @@
-import { useState } from 'react'
-import { Outlet, NavLink } from 'react-router-dom'
+import { useState } from 'react';
+import { Outlet, NavLink } from 'react-router-dom';
+import NavBar from '../components/NavBar';
 
 const MainLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigation = [
     { name: 'Patient Management', path: '/patients' },
     { name: 'Result Upload', path: '/results' },
     { name: 'Kit Activation', path: '/kits' },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <NavBar />
       <aside className={`fixed top-0 left-0 z-40 h-screen w-64 transform transition-transform duration-300 ease-in-out bg-white border-r ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div className="p-4">
           <h2 className="text-xl font-semibold mb-8">Prenetics</h2>
@@ -71,7 +73,7 @@ const MainLayout = () => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;
