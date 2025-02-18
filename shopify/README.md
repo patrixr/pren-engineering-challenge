@@ -2,6 +2,8 @@
 
 This page documents the implementation and design decisions for the Shopify store requested by the engineering challenge.
 
+> Note: A link and password to the store will be provided over email.
+
 ## Name and design
 
 For the appearance of the store, the following criteria were considered:
@@ -19,7 +21,30 @@ The store was named "**Terra**" to reflect the theme of health and wellness.
 
 > Note: AI tools were used to create the dummy data for the site
 
-## Layout
+## Theming
+
+This store is based on IM8 as an inspiration. The same theme was used as a baseline to try and capture the essence of the store.
+Different structure and colors were used to make the store unique.
+
+### Layout
+
+Layout was kept simple, and very close to e-commerce standards. It is structured as follows:
+
+```plaintext
+|---------------------|
+|       Header        |
+|---------------------|
+|        Hero         |
+|---------------------|
+|       Products      |
+|---------------------|
+|       Reviews       |
+|---------------------|
+|       Blog Posts    |
+|---------------------|
+|       Footer        |
+|---------------------|
+```
 
 ## Native Shopify Store vs Custom Store
 
