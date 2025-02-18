@@ -2,11 +2,12 @@
 
 ## Table of Contents
 
-1. [Overview](#1-overview)
-2. [Testing approach](#2-testing-approach)
-   - [Integration testing strategy](#integration-testing-strategy)
-   - [Overview of tests](#overview-of-tests)
-3. [Base project updates](#3-base-project-updates)
+- [1. Overview](#1-overview)
+- [2. Testing approach](#2-testing-approach)
+  - [Integration testing strategy](#integration-testing-strategy)
+  - [Overview of tests](#overview-of-tests)
+- [3. Implementing features](#3-implementing-features)
+- [4. Base project updates](#4-base-project-updates)
 
 ## 1. Overview
 
@@ -147,7 +148,15 @@ Search API
     ✓ formats date to correct string format
 ```
 
-## 3. Base project updates
+## 3. Implementing features
+
+The general approach to implementing features was to follow a TDD-inspired approach. Apart from the initial setup work that I had to do to get things running quick enough,
+I tried to add features one by one, or in small batches, which the accompanying tests every time.
+
+Writing the tests before the implementation is the TDD golden rule, but in this case, I mostly wrote the labels of the tests first, and then the implementation.
+The idea is to create a mental checklist of the specifications that need to be met.
+
+## 4. Base project updates
 
 Here are the updates made to the base project, to fix issues found during development:
 
