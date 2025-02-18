@@ -5,8 +5,8 @@ This repository contains the solution and documentation for the engineering chal
 It is composed of 3 folders, each representing a different part of the challenge:
 
 - [Shopify Store](./shopify/README.md): Contains the detailed documentation for an online store built using Shopify. A link to the store should be provided over email.
-- [Backend Challenge](./backend/NOTES.md): Contains the source code and documentation for the backend challenge (NOTES.md).
-- [Frontend Challenge](./frontend/README.md): Contains the source code and documentation for the frontend challenge (README.md).
+- [Backend Challenge](./prenetics-backend-assignment/NOTES.md): Contains the source code and documentation for the backend challenge (NOTES.md).
+- [Frontend Challenge](./prenetics-frontend-assignment/README.md): Contains the source code and documentation for the frontend challenge (README.md).
 
 > Note: Everything was centralized in this repository for simplicity. This structure is not representative of a real-world project.
 
