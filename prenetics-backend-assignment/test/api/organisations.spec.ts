@@ -449,6 +449,39 @@ describeIntegration("Search API", ({ getServer }) => {
       });
     });
 
+    describe("text search", () => {
+      it("searchs by text accross multiple fields", async () => {
+        const otherProfile = await createFakeProfile({
+          organisation,
+          name: "Tim",
+        });
+        await createFakeResult({ profile: otherProfile });
+        await createFakeResult({ profile: otherProfile });
+        const rec1 = await createFakeResult({
+          profile: otherProfile,
+          result: "positive",
+        });
+        const rec2 = await createFakeResult({
+          profile: await createFakeProfile({
+            organisation,
+            name: "John Posix",
+          }),
+        });
+
+        const { body } = await request(getServer())
+          .get(`/test/v1.0/org/${organisation.organisationId}/sample`)
+          .query({
+            q: "osi",
+          })
+          .expect(200)
+          .expect("Content-Type", /json/);
+
+        expect(body.data).to.have.lengthOf(2);
+        expect(body.data.find((r: any) => r.id === rec1.resultId)).to.exist;
+        expect(body.data.find((r: any) => r.id === rec2.resultId)).to.exist;
+      });
+    });
+
     describe("filtering", () => {
       it("filters by patient ID", async () => {
         for (let i = 0; i < 5; i++) {

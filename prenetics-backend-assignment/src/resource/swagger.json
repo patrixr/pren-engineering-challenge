@@ -31,9 +31,7 @@
   "paths": {
     "/v1.0/org": {
       "get": {
-        "tags": [
-          "organisation"
-        ],
+        "tags": ["organisation"],
         "summary": "Get list of organisations",
         "operationId": "getOrg",
         "responses": {
@@ -52,9 +50,7 @@
     },
     "/v1.0/org/{org}/profile": {
       "post": {
-        "tags": [
-          "profile"
-        ],
+        "tags": ["profile"],
         "summary": "Create a profile of an organisation",
         "operationId": "createProfile",
         "parameters": [
@@ -94,9 +90,7 @@
     },
     "/v1.0/org/{org}/profile/{profile}": {
       "get": {
-        "tags": [
-          "profile"
-        ],
+        "tags": ["profile"],
         "summary": "Get a profile of an organisation",
         "operationId": "getProfile",
         "parameters": [
@@ -135,9 +129,7 @@
     },
     "/v1.0/org/{org}/sample": {
       "get": {
-        "tags": [
-          "sample"
-        ],
+        "tags": ["sample"],
         "summary": "Get results of an organisation",
         "operationId": "getResults",
         "parameters": [
@@ -197,6 +189,15 @@
           },
           {
             "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": "1"
+            }
+          },
+          {
+            "in": "query",
             "name": "resultTime",
             "required": false,
             "schema": {
@@ -210,10 +211,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "negative",
-                "positive"
-              ]
+              "enum": ["negative", "positive"]
             }
           }
         ],
@@ -236,9 +234,7 @@
     },
     "/v1.0/org/{org}/profile/{profile}/sample": {
       "post": {
-        "tags": [
-          "sample"
-        ],
+        "tags": ["sample"],
         "summary": "Create a result for an organisation",
         "operationId": "createResult",
         "parameters": [
@@ -287,9 +283,7 @@
     },
     "/v1.0/org/{org}/profile/{profile}/sample/{sample}": {
       "get": {
-        "tags": [
-          "sample"
-        ],
+        "tags": ["sample"],
         "summary": "Get a result of an organisation",
         "operationId": "getProfileResult",
         "parameters": [
@@ -346,9 +340,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": [
-                  "sample"
-                ]
+                "enum": ["sample"]
               },
               "attributes": {
                 "type": "object",
@@ -359,11 +351,7 @@
                   },
                   "resultType": {
                     "type": "string",
-                    "enum": [
-                      "rtpcr",
-                      "antigen",
-                      "antibody"
-                    ]
+                    "enum": ["rtpcr", "antigen", "antibody"]
                   }
                 }
               }
@@ -380,20 +368,14 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "sample"
-            ]
+            "enum": ["sample"]
           },
           "attributes": {
             "type": "object",
             "properties": {
               "resultType": {
                 "type": "string",
-                "enum": [
-                  "rtpcr",
-                  "antigen",
-                  "antibody"
-                ]
+                "enum": ["rtpcr", "antigen", "antibody"]
               },
               "sampleId": {
                 "type": "string",
@@ -409,17 +391,10 @@
               },
               "result": {
                 "type": "string",
-                "enum": [
-                  "negative",
-                  "positive"
-                ]
+                "enum": ["negative", "positive"]
               }
             },
-            "required": [
-              "resultType",
-              "sampleId",
-              "activateTime"
-            ]
+            "required": ["resultType", "sampleId", "activateTime"]
           }
         }
       },
@@ -448,9 +423,7 @@
                     "properties": {
                       "type": {
                         "type": "string",
-                        "enum": [
-                          "profile"
-                        ]
+                        "enum": ["profile"]
                       },
                       "id": {
                         "type": "string",
@@ -498,9 +471,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": [
-                  "profile"
-                ]
+                "enum": ["profile"]
               },
               "attributes": {
                 "type": "object",
@@ -524,9 +495,7 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "profile"
-            ]
+            "enum": ["profile"]
           },
           "attributes": {
             "type": "object",
@@ -556,9 +525,7 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "organisation"
-            ]
+            "enum": ["organisation"]
           },
           "attributes": {
             "type": "object",

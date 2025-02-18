@@ -93,6 +93,34 @@ describeIntegration("Search component", () => {
     });
   });
 
+  describe("text search", () => {
+    it("does a text search on multiple fields", async () => {
+      const otherProfile = await createFakeProfile({
+        organisation,
+        name: "Tim",
+      });
+      await createFakeResult({ profile: otherProfile });
+      await createFakeResult({ profile: otherProfile });
+      const rec1 = await createFakeResult({
+        profile: otherProfile,
+        result: "positive",
+      });
+      const rec2 = await createFakeResult({
+        profile: await createFakeProfile({
+          organisation,
+          name: "John Posix",
+        }),
+      });
+
+      const results = await search(manager, organisation, {
+        q: "posi",
+      });
+      expect(results.data).to.have.lengthOf(2);
+      expect(results.data.find((r) => r.id === rec1.resultId)).to.exist;
+      expect(results.data.find((r) => r.id === rec2.resultId)).to.exist;
+    });
+  });
+
   describe("filtering", () => {
     it("filters by patient name", async () => {
       const otherProfile = await createFakeProfile({ organisation });
