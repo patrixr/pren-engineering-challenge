@@ -5,26 +5,28 @@ import PatientManagement from './pages/PatientManagement'
 import { OrganisationProvider } from './context/OrganisationContext'
 import ResultUpload from './pages/ResultUpload'
 import KitActivation from './pages/KitActivation'
+import Seeding from './pages/Seeding'
 
 const queryClient = new QueryClient()
 
 function App() {
   return (
     <div data-theme="cupcake">
-      <OrganisationProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <OrganisationProvider>
           <BrowserRouter>
             <Routes>
               <Route element={<MainLayout />}>
                 <Route path="/patients" element={<PatientManagement />} />
                 <Route path="/results" element={<ResultUpload />} />
                 <Route path="/kits" element={<KitActivation />} />
+                <Route path="/seeding" element={<Seeding />} />
                 <Route path="/" element={<Navigate to="/patients" replace />} />
               </Route>
             </Routes>
           </BrowserRouter>
-        </QueryClientProvider>
-      </OrganisationProvider>
+        </OrganisationProvider>
+      </QueryClientProvider>
     </div>
   )
 }

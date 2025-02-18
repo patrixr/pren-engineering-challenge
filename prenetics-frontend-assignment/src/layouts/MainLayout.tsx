@@ -7,6 +7,7 @@ const MainLayout = () => {
 
   const navigation = [
     { name: 'Patient Management', path: '/patients' },
+    { name: 'Create dummy data', path: '/seeding' },
     { name: 'Result Upload', path: '/results' },
     { name: 'Kit Activation', path: '/kits' },
   ];
@@ -60,8 +61,8 @@ const MainLayout = () => {
         </div>
       </div>
 
-      <main className={`lg:ml-64 min-h-screen transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
-        <div className="p-4 lg:p-8 mt-16 lg:mt-0">
+      <main className={`lg:ml-64 overflow-y-auto min-h-screen transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-0'}`}>
+        <div className="p-4 lg:p-8 mt-20">
           <Outlet />
         </div>
       </main>

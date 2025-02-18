@@ -4,8 +4,12 @@ import { useOrganisations } from '../hooks/organisations';
 const NavBar = () => {
   const { organisations, selectedOrganisation, setSelectedOrganisation, isLoading } = useOrganisations();
 
+  if (selectedOrganisation && !organisations?.data.find(org => org.id === selectedOrganisation.id)) {
+    setSelectedOrganisation(null);
+  }
+
   return (
-    <div className="navbar bg-base-200">
+    <div className="navbar bg-base-200 fixed">
       <div className="flex-1 px-2 lg:flex-none">
         <a className="text-lg font-bold">Prenetics</a>
       </div>

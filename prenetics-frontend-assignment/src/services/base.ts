@@ -21,7 +21,7 @@ export abstract class RestService {
     return await response.json();
   }
 
-  protected async post<T>(endpoint: string, body: any): Promise<T> {
+  protected async post<T>(endpoint: string, body: any = {}): Promise<T> {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
       headers: {

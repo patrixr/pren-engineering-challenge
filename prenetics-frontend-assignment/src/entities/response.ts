@@ -2,14 +2,19 @@ export type ApiRecord<Attrs> = {
   id: string;
   type: string;
   attributes: Attrs;
-  relationships: Record<string, ApiRecord<any>>
+  relationships?: Record<string, {
+    data: {
+      id: string,
+      type: string,
+    }
+  }>
 }
 
 export type ApiDataResponse<Item> = {
-  data: Item[],
+  data: Item,
 };
 
-export type ApiSearchResponse<Item extends ApiRecord<any>> = {
+export type ApiSearchResponse<Item> = {
   meta: {
       total: number,
       page: number,

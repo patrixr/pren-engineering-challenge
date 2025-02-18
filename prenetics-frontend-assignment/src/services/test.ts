@@ -1,7 +1,9 @@
 import { Organisation } from "../entities/organisation";
+import { Result } from "../entities/profile";
 import { ApiDataResponse, ApiSearchResponse } from "../entities/response";
-import { Result } from "../entities/result";
+import { Profile } from "../entities/result";
 import { RestService } from "./base";
+import { faker } from "@faker-js/faker"
 
 export type SearchOptions = {
   pageOffset?: number;
@@ -12,7 +14,7 @@ export type SearchOptions = {
   activateTime?: string;
   resultTime?: string;
   resultValue?: string;
-  includeFields?: string[];
+  include?: string[];
   q?: string;
 }
 
@@ -22,7 +24,7 @@ export class TestApi extends RestService {
   }
 
   async listOrganisations() {
-    return this.get("/org") as Promise<ApiDataResponse<Organisation>>
+    return this.get("/org") as Promise<ApiDataResponse<Organisation[]>>
   }
 
   async searchResults(organisationId: string, opts: SearchOptions = {}) {
@@ -60,14 +62,40 @@ export class TestApi extends RestService {
       queryParams["resultValue"] = opts.resultValue;
     }
 
-    if (opts.includeFields) {
-      queryParams["include"] = opts.includeFields.join(",");
+    if (opts.include) {
+      queryParams["include"] = opts.include.join(",");
     }
 
     if (opts.q) {
       queryParams["q"] = opts.q;
     }
 
-    return this.get(`/org/${organisationId}/sample`) as Promise<ApiSearchResponse<Result>>
+    return this.get(`/org/${organisationId}/sample`, queryParams) as Promise<ApiSearchResponse<Result[]>>
+  }
+
+  async createDummyProfile(orgId: string) {
+    return this.post<ApiDataResponse<Profile>>(`/org/${orgId}/profile`, {
+      "data": {
+        "type": "profile",
+        "attributes": {
+          "name": faker.person.fullName()
+        }
+      }
+    });
+  }
+
+  async createDummyResult(orgId: string, profileId: string) {
+    return this.post<ApiDataResponse<Result>>(`/org/${orgId}/profile/${profileId}/sample`, {
+      "data": {
+        "type": "sample",
+        "attributes": {
+          "sampleId": faker.string.uuid(),
+          "resultType": faker.helpers.arrayElement(["rtpcr", "antibody", "rtlamp", "antigen"]),
+          "result": faker.helpers.arrayElement(["positive", "negative"]),
+          "activateTime": faker.date.recent().toISOString(),
+          "resultTime": faker.date.recent().toISOString(),
+        }
+      }
+    });
   }
 }
