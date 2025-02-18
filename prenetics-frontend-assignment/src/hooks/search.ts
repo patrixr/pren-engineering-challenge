@@ -10,7 +10,7 @@ export const useSearch = (options: SearchOptions = {}) => {
 
   return useQuery({
     queryKey: ['search-results', options, selectedOrganisation?.id],
-    queryFn: () => api.searchResults(selectedOrganisation?.id!, options),
+    queryFn: () => api.searchResults(selectedOrganisation?.id ?? "", options),
     enabled: !!selectedOrganisation, // Only enable query if an organisation is selected
     retry: false,
   });

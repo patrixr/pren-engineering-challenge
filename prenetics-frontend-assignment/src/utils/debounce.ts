@@ -1,4 +1,4 @@
-export function debounce(func: Function, wait: number = 500) {
+export function debounce<F extends (...args: any[]) => any>(func: F, wait: number = 500) : F {
     let timeout: any = null
 
     return function executedFunction(...args: any[]) {
@@ -12,5 +12,5 @@ export function debounce(func: Function, wait: number = 500) {
         }
 
         timeout = setTimeout(later, wait);
-    };
+    } as F;
 }

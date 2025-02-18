@@ -1,14 +1,14 @@
-import { Request, Response } from 'express';
-import { getManager, getRepository } from 'typeorm';
-import { logger } from '../component/logger';
-import { search } from '../component/search';
-import { Organisation } from '../entity/organisation';
-import { Profile } from '../entity/profile';
-import { Result } from '../entity/result';
+import { Request, Response } from "express";
+import { getManager, getRepository } from "typeorm";
+import { logger } from "../component/logger";
+import { search } from "../component/search";
+import { Organisation } from "../entity/organisation";
+import { Profile } from "../entity/profile";
+import { Result } from "../entity/result";
 import {
   buildSearchOpts,
   validateSampleSearchRequest,
-} from '../validation/searchvalidator';
+} from "../validation/searchvalidator";
 
 export const resultController = new (class {
   getResults = async (request: Request, response: Response) => {
@@ -31,22 +31,22 @@ export const resultController = new (class {
         },
       });
       if (!organisation) {
-        response.status(404).json({ msg: 'Organisation not found' });
+        response.status(404).json({ msg: "Organisation not found" });
       } else {
         const result = await search(manager, organisation, searchOpts);
         response.status(200).json(result);
       }
     } catch (err) {
       logger.error(err.message);
-      response.status(500).json({ msg: 'Something went wrong' });
+      response.status(500).json({ msg: "Something went wrong" });
     }
-  }
+  };
 
   getProfileResult = async (request: Request, response: Response) => {
-    request.checkParams('org', 'org is not valid').isUUID();
-    request.checkParams('profileId', 'profileId is not valid').isUUID();
+    request.checkParams("org", "org is not valid").isUUID();
+    request.checkParams("profileId", "profileId is not valid").isUUID();
     request
-      .checkParams('sampleId', 'sampleId is not valid')
+      .checkParams("sampleId", "sampleId is not valid")
       .isString()
       .notEmpty();
     const errors = request.validationErrors();
@@ -59,25 +59,25 @@ export const resultController = new (class {
     try {
       const resultEnt = await getManager()
         .createQueryBuilder()
-        .select('result')
-        .from(Result, 'result')
+        .select("result")
+        .from(Result, "result")
         .innerJoin(
-          'result.profile',
-          'profile',
-          'profile.profileId = :profileId',
+          "result.profile",
+          "profile",
+          "profile.profileId = :profileId",
           {
             profileId,
           },
         )
         .innerJoin(
-          'profile.organisation',
-          'organisation',
-          'organisation.organisationId = :organisationId',
+          "profile.organisation",
+          "organisation",
+          "organisation.organisationId = :organisationId",
           {
             organisationId: org,
           },
         )
-        .where('result.sampleId = :sampleId', {
+        .where("result.sampleId = :sampleId", {
           sampleId,
         })
         .getOne();
@@ -93,7 +93,7 @@ export const resultController = new (class {
         response.status(200).json({
           data: {
             id,
-            type: 'sample',
+            type: "sample",
             attributes: {
               result,
               sampleId,
@@ -104,23 +104,23 @@ export const resultController = new (class {
           },
         });
       } else {
-        response.status(404).json({ msg: 'Result not found' });
+        response.status(404).json({ msg: "Result not found" });
       }
     } catch (err) {
       logger.error(err.message);
-      response.status(500).json({ msg: 'Something went wrong' });
+      response.status(500).json({ msg: "Something went wrong" });
     }
-  }
+  };
 
   addResult = async (request: Request, response: Response) => {
-    request.checkParams('org', 'org is not valid').isUUID();
-    request.checkParams('profileId', 'profileId is not valid').isUUID();
-    request.checkBody('data.type', 'type is not valid').equals('sample');
+    request.checkParams("org", "org is not valid").isUUID();
+    request.checkParams("profileId", "profileId is not valid").isUUID();
+    request.checkBody("data.type", "type is not valid").equals("sample");
     request
-      .checkBody('data.attributes.sampleId', 'sampleId is not valid')
+      .checkBody("data.attributes.sampleId", "sampleId is not valid")
       .notEmpty();
     request
-      .checkBody('data.attributes.resultType', 'resultType is not valid')
+      .checkBody("data.attributes.resultType", "resultType is not valid")
       .notEmpty();
     const errors = request.validationErrors();
     if (errors) {
@@ -132,38 +132,43 @@ export const resultController = new (class {
       const { org, profileId } = request.params;
       const profile = await getManager()
         .createQueryBuilder()
-        .select('profile')
-        .from(Profile, 'profile')
+        .select("profile")
+        .from(Profile, "profile")
         .innerJoin(
-          'profile.organisation',
-          'organisation',
-          'organisation.organisationId = :organisationId',
+          "profile.organisation",
+          "organisation",
+          "organisation.organisationId = :organisationId",
           {
             organisationId: org,
           },
         )
-        .where('profile.profileId = :profileId', {
+        .where("profile.profileId = :profileId", {
           profileId,
         })
         .getOne();
       if (!profile) {
-        response.status(404).json({ msg: 'Profile not found' });
+        response.status(404).json({ msg: "Profile not found" });
         return;
       }
-      const { sampleId, resultType } = request.body.data.attributes;
+      const {
+        sampleId,
+        resultType,
+        result = "pending",
+      } = request.body.data.attributes;
       const repo = getRepository(Result);
       const resultEnt = await repo.save(
         repo.create({
           sampleId,
           type: resultType,
           profile,
+          result: JSON.stringify(result),
         }),
       );
       const { activateTime, resultId: id } = resultEnt;
       response.status(201).json({
         data: {
           id,
-          type: 'sample',
+          type: "sample",
           attributes: {
             sampleId,
             resultType,
@@ -173,7 +178,7 @@ export const resultController = new (class {
       });
     } catch (err) {
       logger.error(err.message);
-      response.status(500).json({ msg: 'Something went wrong' });
+      response.status(500).json({ msg: "Something went wrong" });
     }
-  }
+  };
 })();

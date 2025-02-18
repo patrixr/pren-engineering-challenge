@@ -1,6 +1,6 @@
 import React from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { OrganisationProvider } from '../src/context/OrganisationContext'
+import { OrganisationProvider } from '../src/providers/OrganisationsProvider'
 
 export const WithProviders = ({ children, queryClient }: {
   children: React.ReactNode,

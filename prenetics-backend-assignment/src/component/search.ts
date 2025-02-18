@@ -52,6 +52,7 @@ export async function search(
           profile.profileId::text ILIKE :searchTerm OR
           result.sampleId = :exactTerm OR
           result.result::text ILIKE :searchTerm OR
+          result.type ILIKE :searchTerm OR
           TO_CHAR(result.activateTime, 'YYYY-MM-DD') ILIKE :searchTerm OR
           TO_CHAR(result.resultTime, 'YYYY-MM-DD') ILIKE :searchTerm
       )`,

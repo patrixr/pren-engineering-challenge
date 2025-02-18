@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { OrganisationContext } from "../context/OrganisationContext";
+import { OrganisationContext } from "../contexts/OrganisationContext";
 import { TestApi } from '../services/test';
 import { useQuery } from "@tanstack/react-query";
 
