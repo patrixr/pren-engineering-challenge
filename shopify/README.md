@@ -1,5 +1,15 @@
 # Shopify Implementation
 
+- [Name and design](#name-and-design)
+- [Theming](#theming)
+  - [Layout](#layout)
+- [Native Shopify Store vs Custom Store](#native-shopify-store-vs-custom-store)
+- [Content](#content)
+- [Localisation](#localisation)
+- [Regional Setup](#regional-setup)
+- [Custom Shipping Options](#custom-shipping-options)
+- [Discounts](#discounts)
+
 This page documents the implementation and design decisions for the Shopify store requested by the engineering challenge.
 
 > Note: A link and password to the store will be provided over email.

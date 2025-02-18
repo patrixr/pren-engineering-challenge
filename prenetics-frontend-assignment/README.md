@@ -14,6 +14,21 @@ It uses [daisyui](https://daisyui.com/) basic styling and components (pure css f
 
 ![](./resources/screenshot.png)
 
+## Table of Contents
+
+- [Prenetics Frontend Engineering Challenge](#prenetics-frontend-engineering-challenge)
+  - [Notes on implementation](#notes-on-implementation)
+    - [Time constraints](#time-constraints)
+    - [Features](#features)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Running the project](#running-the-project)
+  - [Testing](#testing)
+    - [Typical approach to front-end testing](#typical-approach-to-front-end-testing)
+    - [Levels of mocking](#levels-of-mocking)
+    - [Running the tests](#running-the-tests)
+  - [Key Technologies](#key-technologies)
+
 ## Notes on implementation
 
 ### Time constraints

@@ -1,5 +1,13 @@
 # Backend Engineering Challenge Approach
 
+## Table of Contents
+
+1. [Overview](#1-overview)
+2. [Testing approach](#2-testing-approach)
+   - [Integration testing strategy](#integration-testing-strategy)
+   - [Overview of tests](#overview-of-tests)
+3. [Base project updates](#3-base-project-updates)
+
 ## 1. Overview
 
 To design the API, I looked at the Swagger file and the mock data present in search.ts. And took the following steps:
